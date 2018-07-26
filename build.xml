@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Usual Command" default="ZipProject" xmlns:artifact="urn:maven-artifact-ant">
+    <description>Usual Command API</description>
+    
+     <!-- 1. Zip Project -->
+    <target name="ZipProject">
+        <tstamp><format property="TODAY" pattern="yyyyMMdd" locale="us"/></tstamp>
+   	
+        <antcall target="_ZipProject">
+            <param name="SourceDir" value="../ZeroCommon"/>
+            <param name="TargetFile" value="../ZeroCommon_${TODAY}.zip"/>
+        </antcall>
+    </target>
+
+    <!-- 2. Backup Project -->
+    <target name="BackupProject">
+        <antcall target="_BackupProject">
+            <param name="SourceDir" value="E:/workspace_MyEclipse_6.5_ninetowns/Zhiqa/ZhiqaMgr"/>
+            <param name="TargetDir" value="E:/workspace_backup/ZhiqaMgr"/>
+        </antcall>
+
+        <antcall target="_BackupProject">
+            <param name="SourceDir" value="E:/workspace_MyEclipse_6.5_ninetowns/Zhiqa/ZhiqaWeb"/>
+            <param name="TargetDir" value="E:/workspace_backup/ZhiqaWeb"/>
+        </antcall>
+    </target>
+
+    <target name="_BackupProject">
+        <copy todir="${TargetDir}">
+            <fileset dir="${SourceDir}">
+                <include name="**/*.java"/>   
+                <include name="**/*.xml"/>     
+                <include name="**/*.txt"/>  
+
+                <exclude name="**/*.jar"/>
+                <exclude name="**/*.class"/>
+                <exclude name="WebRoot/WEB-INF/classes/*.*"/>               
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="_ZipProject">
+        <delete file="${TargetFile}"/>
+        <zip destfile="${TargetFile}" basedir="${SourceDir}" excludes="**/*.jar,**/*.class,WebContent/WEB-INF/classes/,.settings/,**/images/**/*.*"/>
+    </target>
+
+    <!-- Common function, aka Common Task, overwrite="true"
+    <target name="copyTest">   
+        <antcall target="copy">   
+            <param name="source" value="D:\workspace_3.4_rcp_hk\XMLASIA-Framework-Test"/>   
+            <param name="target" value="D:\workspace_3.4_rcp\XMLASIA-Framework-Test"/>
+        </antcall>   
+    </target>
+    -->   
+    <target name="copy" >   
+        <copy todir="${target}">   
+            <fileset dir="${source}">   
+                <include name="**/*.java"/>   
+                <include name="**/*.xml"/>     
+                <include name="**/*.txt"/>   
+
+                <exclude name="**/.svn/*.*"/>   
+                <exclude name="**/cvs/*.*"/>
+                <exclude name=".classpath"/>
+                <exclude name=".project"/>
+            </fileset>   
+        </copy>   
+    </target> 
+</project>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<querys>
+    <query>
+        <queryName>Find User(CustomerDB)</queryName>
+        <dataSource>jdbc/CustomerDB</dataSource>
+        <sql>select * from user</sql>
+    </query>
+
+    <query>
+        <queryName>Find Role(CustomerDB)</queryName>
+        <dataSource>jdbc/CustomerDB</dataSource>
+        <sql>select * from role where role_id &lt; 20</sql>
+    </query>
+
+    <query>
+        <queryName>Find Cat(PetstoreDB)</queryName>
+        <dataSource>jdbc/PetstoreDB</dataSource>
+        <sql>select * from cat</sql>
+    </query>
+</querys>

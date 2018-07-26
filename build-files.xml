@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="AntTasks" default="CopyFiles" xmlns:artifact="urn:maven-artifact-ant">
+    <description>Usual Command API</description>
+
+    <target name="CopyFiles">      
+        <copy todir="c:/tmp">
+            <fileset dir="c:/abc"></fileset>
+        	<fileset dir="c:/1"></fileset>
+        </copy>     
+    </target>
+        	
+     <!-- 1. Zip Project -->
+    <target name="ZipProject">    	
+    	<antcall target="_ZipProject"><param name="SourceDir" value="F:\_photos_20150313\video"/></antcall>    	
+    </target>
+
+    <target name="_ZipProject">
+    	<tstamp><format property="TODAY" pattern="yyyyMMdd" locale="us"/></tstamp>
+    	
+        <delete file="${SourceDir}.zip"/>
+    	<zip basedir="${SourceDir}" destfile="${SourceDir}.zip"/>
+    	<delete dir="${SourceDir}"/>
+        <!-- <zip basedir="${SourceDir}" destfile="${SourceDir}_${TODAY}.zip"/>
+    	     <delete dir="${SourceDir}"/> -->
+    </target>	
+</project>

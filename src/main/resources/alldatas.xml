@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<querys>
+    <query>
+        <dataSource>Audi</dataSource>
+        <queryName>query1</queryName>
+        <sql>select * from t1</sql>
+    </query>
+    <query>
+        <dataSource>Benz</dataSource>
+        <queryName>query2</queryName>
+        <sql>delete t2</sql>
+    </query>
+</querys>
