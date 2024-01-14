@@ -1,8 +1,8 @@
-package com.zero.demo;
+package com.zero.demo.algorithm;
 
 import java.util.Random;
 
-public class Algorithm_Recursion {
+public class Recursion {
     static Random random = new Random();
     static int count = 10;
     static int[] dataArr = new int[count];

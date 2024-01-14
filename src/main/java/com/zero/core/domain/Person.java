@@ -1,8 +1,7 @@
-package com.zero.common.demo.domain;
+package com.zero.core.domain;
 
 import java.util.Date;
 
-import com.zero.core.domain.AbstractEntity;
 import com.zero.core.util.BaseUtils;
 
 public class Person extends AbstractEntity implements Cloneable {

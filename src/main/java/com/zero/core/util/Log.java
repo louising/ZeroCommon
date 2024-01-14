@@ -1,10 +1,6 @@
 package com.zero.core.util;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -23,14 +19,13 @@ public class Log {
     private static PrintWriter pw;
 
     static {
+        /*
         try {
-            //append
             Writer writer = new OutputStreamWriter(new FileOutputStream("c:/test.log", true));
-            //auto-flush
             pw = new PrintWriter(writer, true);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
+        } */
     }
 
     //### [DEBUG][2007-12-17 14:16:23.703][com.zero.demo.Test.main(19)]: Hello 

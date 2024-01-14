@@ -2,6 +2,7 @@ package com.zero.core.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -9,6 +10,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -17,6 +20,8 @@ import java.lang.management.MemoryUsage;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.Collator;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -32,6 +37,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
+
 
 /**
  * Generic utility methods for working with usual operations.
@@ -159,7 +166,7 @@ public class BaseUtils {
 
         int nextChar;
         for (int i = 0; i < length; i++) {
-            nextChar = random.nextInt(chars.length()); // [0..last-first]
+            nextChar = random.nextInt(chars.length()); // [0..last)
             buf[i] = chars.charAt(nextChar);
         }
         return new String(buf);
@@ -725,10 +732,14 @@ public class BaseUtils {
         }
     }
 
+    public static void prtArray(int[] array) {
+        prtArray(array, true);
+    }
+    
     public static void prtArray(int[] array, boolean isInOneLine) {
         if (isInOneLine) {
             System.out.printf("%s (%d) %n", Arrays.toString(array), array.length);
-        } else {            
+        } else {
             System.out.println("Size: " + array.length);
             for (int i = 0; i < array.length; i++) {
                 System.out.printf("%2d: %s\n", i, array[i]);
@@ -787,6 +798,24 @@ public class BaseUtils {
         System.out.println(sb.toString());
     }
 
+    /**
+    @dirPath: c:/tmp
+    Return <antcall target="_ZipProject"><param name="SourceDir" value="d:/tmp/1.txt"/></antcall>
+    */
+    public static void generateAntTaskOfZipProject(String dirPath) {
+        File dir = new File(dirPath);
+        String[] names = dir.list();
+
+        String str = "";
+        for (String name : names) {
+            if (".metadata".equals(name))
+                continue;
+            String fileName = dirPath + "/" + name;
+            str += "<antcall target=\"_ZipProject\"><param name=\"SourceDir\" value=\"" + fileName + "\"/></antcall>\n";
+        }
+        System.out.println(str);
+    }
+
     //---------------------------------------------------------------------
     // General convenience methods for working with Strings
     //---------------------------------------------------------------------    
@@ -835,6 +864,15 @@ public class BaseUtils {
             }
         }
         return false;
+    }
+
+    /** Return b9220e3a2dfe43cfb4b545789ec05d62 (32 bits) */
+    public static String getId() {
+        String token = UUID.randomUUID().toString(); //b9220e3a-2dfe-43cf-b4b5-45789ec05d62 (36 bits)
+        System.out.println(token);                   //b9220e3a2dfe43cfb4b545789ec05d62 (32 bits)
+        token = token.replace("-", "");
+        System.out.println(token);
+        return token;
     }
 
     /**
@@ -1041,7 +1079,7 @@ public class BaseUtils {
         return str;
     }
 
-    private static Map<String, String> getArgumentsOfVM() {
+    public static Map<String, String> getArgumentsOfVM() {
         Map<String, String> map = new HashMap<String, String>();
         long maxMem = Runtime.getRuntime().maxMemory() / (1024 * 1024);
         long freeMem = Runtime.getRuntime().freeMemory() / (1024 * 1024);
@@ -1053,7 +1091,17 @@ public class BaseUtils {
     }
 
     public static void prtVM() {
-        System.out.println(getArgumentsOfVM());
+        Map<String, String> map = new HashMap<String, String>();
+
+        long maxMem = Runtime.getRuntime().maxMemory() / (1024 * 1024);
+        long freeMem = Runtime.getRuntime().freeMemory() / (1024 * 1024);
+        long usedMem = maxMem - freeMem;
+        map.put("CPU", Runtime.getRuntime().availableProcessors() + "");
+        map.put("MaxMemory", maxMem + "MB");
+        map.put("UsedMemory", usedMem + "MB");
+        map.put("FreeMemory", freeMem + "MB");
+
+        System.out.println(map);
     }
 
     public static String getStr(Collection<?> c) {
@@ -1062,5 +1110,64 @@ public class BaseUtils {
             sb.append(obj + " ");
         }
         return sb.toString();
+    }
+
+    public static String sendGet(String urlStr, Map<String, String> headers) throws Exception {
+        //System.out.println("GET " + urlStr + " Header: " + headers);
+
+        StringBuffer sb = new StringBuffer();
+        HttpURLConnection connection = (HttpURLConnection) (new URL(urlStr)).openConnection();
+        connection.setRequestMethod("GET");
+        connection.setDoInput(true); //default: true(for input)
+        connection.setConnectTimeout(30_000);
+        connection.setReadTimeout(25_000);
+        //connection.setUseCaches(false);
+        //Set headers
+        //connection.setRequestProperty("Content-Type", "application/json");
+        if (headers != null && !headers.isEmpty()) {
+            for (String key : headers.keySet()) {
+                connection.setRequestProperty(key, headers.get(key));
+            }
+        }
+
+        connection.connect(); //Open connect
+
+        try (InputStream in = connection.getInputStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            //checkFileSize(in.available());
+            readInputStreamToString(reader, sb);
+        }
+
+        connection.disconnect();
+
+        return sb.toString();
+    }
+
+    /**<pre>
+    * Read InputStream to String
+    * This method is used to replace the following code:
+    * 
+    * String readLine;
+    * while ((readLine = responseReader.readLine()) != null) {
+    * sb.append(readLine).append("\n");
+    * }
+    * </pre>
+    */
+    private static void readInputStreamToString(BufferedReader br, StringBuffer sb) throws IOException {
+        char[] c = new char[1024];
+        int read = 0;
+        while (read != -1) {
+            read = br.read(c);
+            if (read < 0) {
+                break;
+            }
+
+            if (read < 1024) {
+                char[] tmp = new char[read];
+                tmp = Arrays.copyOf(c, read);
+                sb.append(tmp);
+            } else {
+                sb.append(c);
+            }
+        }
     }
 }
