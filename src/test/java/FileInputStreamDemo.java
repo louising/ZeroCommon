@@ -8,7 +8,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,7 +49,6 @@ public class FileInputStreamDemo {
         //testCurrency();
         //BigDecimal b = new BigDecimal("");
         //System.out.println(b);
-        System.out.println(DummyX.calc(2, 3));
     }
     
     static void testCurrency() throws Exception {

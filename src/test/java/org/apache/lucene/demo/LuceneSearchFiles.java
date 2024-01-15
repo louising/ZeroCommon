@@ -38,9 +38,9 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
 
 /** Simple command-line based search demo. */
-public class SearchFiles {
+public class LuceneSearchFiles {
 
-  private SearchFiles() {}
+  private LuceneSearchFiles() {}
 
   /** Simple command-line based search demo. */
   public static void main(String[] args) throws Exception {

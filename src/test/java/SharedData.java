@@ -1,5 +1,3 @@
-import java.util.Random;
-
 public class SharedData {
     //private boolean isRunning = true;
     private volatile boolean isRunning = true;
