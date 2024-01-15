@@ -12,8 +12,7 @@ public class Knapsack {
         //List<List<Integer>> allCombinations = fitItems(new int[] {5, 3, 2,15, 12, 10, 8, 7}, 20);
         //List<List<Integer>> allCombinations = fitItems(new int[] {19, 11, 9, 8, 7, 4, 3, 2, 1}, 20);
         List<List<Integer>> allCombinations = fitItems(new int[] {2, 3, 5, 20, 10, 9, 15}, 20);  //20, 15, 10, 9, 5, 3, 2     2, 3, 5, 9, 10, 15, 20
-        
-        
+                
         for (List<Integer> combination : allCombinations) {
             System.out.println(combination);
         }
